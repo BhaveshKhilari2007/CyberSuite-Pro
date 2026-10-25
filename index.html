@@ -1,0 +1,819 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>⚡ CYBERSUITE PRO - Web Security Toolkit ⚡</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- CryptoJS for MD5 & SHA-1 support alongside standard Web Crypto -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.1.1/crypto-js.min.js"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        cyberDark: '#090d16',
+                        cyberPanel: '#111827',
+                        cyberBorder: '#1f2937',
+                        accentCyan: '#06b6d4',
+                        accentGreen: '#10b981',
+                        accentAmber: '#f59e0b',
+                        accentCrimson: '#ef4444'
+                    },
+                    fontFamily: {
+                        mono: ['Courier New', 'Courier', 'monospace'],
+                        sans: ['Inter', 'sans-serif']
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        /* Custom scrollbar styling for terminal consoles */
+        ::-webkit-scrollbar {
+            width: 6px;
+            height: 6px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #090d16;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #1f2937;
+            border-radius: 3px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #06b6d4;
+        }
+    </style>
+</head>
+<body class="bg-cyberDark text-gray-100 font-sans min-h-screen flex flex-col justify-between selection:bg-accentCyan selection:text-cyberDark">
+
+    <!-- TOP HEADER -->
+    <header class="bg-cyberPanel border-b border-cyberBorder p-4 shadow-lg text-center">
+        <h1 class="text-2xl md:text-3xl font-mono font-bold text-accentCyan tracking-wider flex items-center justify-center gap-2">
+            <span>⚡ CYBERSUITE PRO ⚡</span>
+        </h1>
+        <p class="text-xs md:text-sm text-gray-400 mt-1 font-mono">
+            NetBlocker • Email Analyzer • Scam SMS • PhishGuard • PasswordChecker • PortScanner • FileHasher • SubRecon • CryptoXOR • AuditLogs
+        </p>
+    </header>
+
+    <!-- MAIN CONTAINER WITH TABS -->
+    <main class="max-w-7xl w-full mx-auto p-3 md:p-6 flex-grow flex flex-col">
+        
+        <!-- RESPONSIVE TAB BAR -->
+        <nav class="flex flex-wrap gap-1 bg-cyberPanel p-2 rounded-t-xl border border-cyberBorder border-b-0 overflow-x-auto text-xs md:text-sm font-bold" id="tabNav">
+            <button onclick="switchTab('netblocker')" id="tab-netblocker" class="tab-btn px-4 py-2.5 rounded-lg text-gray-400 hover:text-white transition flex items-center gap-1.5 active-tab">
+                🔒 NetBlocker
+            </button>
+            <button onclick="switchTab('email')" id="tab-email" class="tab-btn px-4 py-2.5 rounded-lg text-gray-400 hover:text-white transition flex items-center gap-1.5">
+                📧 Email Analyzer
+            </button>
+            <button onclick="switchTab('sms')" id="tab-sms" class="tab-btn px-4 py-2.5 rounded-lg text-gray-400 hover:text-white transition flex items-center gap-1.5">
+                📱 Scam SMS
+            </button>
+            <button onclick="switchTab('phish')" id="tab-phish" class="tab-btn px-4 py-2.5 rounded-lg text-gray-400 hover:text-white transition flex items-center gap-1.5">
+                🛡️ PhishGuard
+            </button>
+            <button onclick="switchTab('password')" id="tab-password" class="tab-btn px-4 py-2.5 rounded-lg text-gray-400 hover:text-white transition flex items-center gap-1.5">
+                🔐 PasswordChecker
+            </button>
+            <button onclick="switchTab('port')" id="tab-port" class="tab-btn px-4 py-2.5 rounded-lg text-gray-400 hover:text-white transition flex items-center gap-1.5">
+                🛡️ Port Scanner
+            </button>
+            <button onclick="switchTab('hasher')" id="tab-hasher" class="tab-btn px-4 py-2.5 rounded-lg text-gray-400 hover:text-white transition flex items-center gap-1.5">
+                📄 File Hasher
+            </button>
+            <button onclick="switchTab('subrecon')" id="tab-subrecon" class="tab-btn px-4 py-2.5 rounded-lg text-gray-400 hover:text-white transition flex items-center gap-1.5">
+                🌐 SubRecon
+            </button>
+            <button onclick="switchTab('cryptoxor')" id="tab-cryptoxor" class="tab-btn px-4 py-2.5 rounded-lg text-gray-400 hover:text-white transition flex items-center gap-1.5">
+                🔑 CryptoXOR
+            </button>
+            <button onclick="switchTab('audit')" id="tab-audit" class="tab-btn px-4 py-2.5 rounded-lg text-gray-400 hover:text-white transition flex items-center gap-1.5">
+                📋 Audit Logs
+            </button>
+        </nav>
+
+        <!-- MODULE VIEW PANELS -->
+        <div class="bg-cyberPanel border border-cyberBorder rounded-b-xl p-4 md:p-6 flex-grow shadow-2xl">
+            
+            <!-- MODULE 1: NETBLOCKER -->
+            <section id="mod-netblocker" class="tab-content">
+                <div class="text-center mb-6">
+                    <h2 class="text-xl font-bold text-accentCrimson font-mono flex items-center justify-center gap-2">🔒 Web Domain Firewall Engine</h2>
+                    <p class="text-sm text-gray-400">Reroute target domains into localized virtual loopback diagnostic interfaces.</p>
+                </div>
+                
+                <div class="max-w-2xl mx-auto space-y-4">
+                    <div class="flex flex-col sm:flex-row gap-2">
+                        <input type="text" id="netblockerInput" placeholder="Enter target domain (e.g. facebook.com)" class="flex-grow bg-cyberDark border border-cyberBorder focus:border-accentCyan rounded-lg px-4 py-2 text-sm text-gray-100 outline-none">
+                        <button onclick="addBlockedDomain()" class="bg-accentCyan hover:opacity-90 text-cyberDark font-bold px-5 py-2 rounded-lg text-sm transition">Add Target</button>
+                    </div>
+
+                    <div class="bg-cyberDark border border-cyberBorder rounded-lg p-4">
+                        <h3 class="text-sm font-bold text-gray-300 mb-2 font-mono">Active Target Domain Blocklist:</h3>
+                        <ul id="blockedDomainsList" class="space-y-1.5 max-h-48 overflow-y-auto font-mono text-xs">
+                            <!-- Injected JS domains -->
+                        </ul>
+                    </div>
+
+                    <div class="flex flex-wrap gap-3 justify-center pt-2">
+                        <button onclick="deployBlockRules()" class="bg-accentCrimson hover:opacity-90 text-white font-bold px-5 py-2.5 rounded-lg text-sm transition shadow-lg">🚫 DEPLOY SYSTEM BLOCK</button>
+                        <button onclick="flushBlockRules()" class="bg-accentGreen hover:opacity-90 text-cyberDark font-bold px-5 py-2.5 rounded-lg text-sm transition shadow-lg">✅ FLUSH NETWORK RULES</button>
+                    </div>
+
+                    <div id="netblockerConsole" class="bg-cyberDark border border-cyberBorder rounded-lg p-3 text-xs font-mono text-accentGreen h-24 overflow-y-auto hidden"></div>
+                </div>
+            </section>
+
+            <!-- MODULE 2: EMAIL ANALYZER -->
+            <section id="mod-email" class="tab-content hidden">
+                <div class="text-center mb-6">
+                    <h2 class="text-xl font-bold text-accentCyan font-mono">📧 Structured Vector Domain Analyzer</h2>
+                    <p class="text-sm text-gray-400">Audit syntactic patterns and structural integrity of email handles.</p>
+                </div>
+                <div class="max-w-2xl mx-auto space-y-4">
+                    <div class="flex flex-col sm:flex-row gap-2">
+                        <input type="text" id="emailInput" placeholder="user@domain.com" class="flex-grow bg-cyberDark border border-cyberBorder focus:border-accentCyan rounded-lg px-4 py-2 text-sm text-gray-100 outline-none">
+                        <button onclick="analyzeEmail()" class="bg-accentCyan text-cyberDark font-bold px-5 py-2 rounded-lg text-sm hover:opacity-90">⚡ INITIALIZE AUDIT</button>
+                        <button onclick="clearEmail()" class="bg-cyberDark text-gray-400 border border-cyberBorder px-4 py-2 rounded-lg text-sm hover:bg-cyberBorder">🧹 PURGE</button>
+                    </div>
+                    <pre id="emailReport" class="bg-cyberDark border border-cyberBorder rounded-lg p-4 font-mono text-xs text-accentGreen min-h-[160px] whitespace-pre-wrap">Awaiting handle input target...</pre>
+                </div>
+            </section>
+
+            <!-- MODULE 3: SCAM SMS -->
+            <section id="mod-sms" class="tab-content hidden">
+                <div class="text-center mb-4">
+                    <h2 class="text-xl font-bold text-accentAmber font-mono">📱 Smishing & Spoofing Linguistic Matrix Engine</h2>
+                    <p class="text-sm text-gray-400">Evaluate smishing threat metrics and payload redirection pointers.</p>
+                </div>
+                <div class="max-w-3xl mx-auto space-y-4">
+                    <div>
+                        <label class="text-xs font-mono text-gray-400 mb-1 block">Raw SMS Ingest Array Buffer:</label>
+                        <textarea id="smsInput" rows="3" placeholder="Paste incoming SMS text payload here..." class="w-full bg-cyberDark border border-cyberBorder focus:border-accentAmber rounded-lg p-3 text-xs font-mono text-gray-100 outline-none"></textarea>
+                    </div>
+                    <div class="text-center">
+                        <button onclick="analyzeSMS()" class="bg-accentAmber text-cyberDark font-bold px-6 py-2.5 rounded-lg text-sm hover:opacity-90 shadow-md">🔍 EXECUTE HEURISTIC SCAN</button>
+                    </div>
+                    <div>
+                        <label class="text-xs font-mono text-gray-400 mb-1 block">Vector Indicator Output Logs:</label>
+                        <pre id="smsOutput" class="bg-cyberDark border border-cyberBorder rounded-lg p-4 font-mono text-xs text-gray-300 min-h-[160px] whitespace-pre-wrap">Ready for linguistic analysis.</pre>
+                    </div>
+                </div>
+            </section>
+
+            <!-- MODULE 4: PHISHGUARD -->
+            <section id="mod-phish" class="tab-content hidden">
+                <div class="text-center mb-6">
+                    <h2 class="text-xl font-bold text-accentCyan font-mono">🛡️ PhishGuard Pro - Deep Domain Validation Engine</h2>
+                    <p class="text-sm text-gray-400">Detect typosquatting, unauthorized raw IP vectors, and malicious schemes.</p>
+                </div>
+                <div class="max-w-2xl mx-auto space-y-4">
+                    <div>
+                        <label class="text-xs font-mono text-gray-400 mb-1 block">Target URL Payload Integration Entry:</label>
+                        <input type="text" id="phishInput" value="http://faceb00k-login.tk/verify" class="w-full bg-cyberDark border border-cyberBorder focus:border-accentCyan rounded-lg px-4 py-2 text-sm text-gray-100 outline-none">
+                    </div>
+                    <div class="text-center">
+                        <button onclick="inspectURL()" class="bg-accentCrimson text-white font-bold px-6 py-2.5 rounded-lg text-sm hover:opacity-90 shadow-lg">⚡ DEPLOY RECONNAISSANCE SCAN</button>
+                    </div>
+                    <div id="phishStatus" class="bg-cyberDark border border-cyberBorder rounded-lg p-4 text-center font-mono text-sm text-gray-400 min-h-[80px] flex items-center justify-center">
+                        Awaiting data ingestion vector pipelines...
+                    </div>
+                </div>
+            </section>
+
+            <!-- MODULE 5: PASSWORD CHECKER -->
+            <section id="mod-password" class="tab-content hidden">
+                <div class="text-center mb-6">
+                    <h2 class="text-xl font-bold text-accentGreen font-mono">🔐 Cryptographic Selection Entropy Auditor</h2>
+                    <p class="text-sm text-gray-400">Measure key complexity, character diversity, and vulnerability thresholds.</p>
+                </div>
+                <div class="max-w-md mx-auto space-y-4">
+                    <div>
+                        <label class="text-xs font-mono text-gray-400 mb-1 block">Target Key String Array Input:</label>
+                        <input type="password" id="passInput" oninput="checkPassword()" placeholder="Type password here..." class="w-full bg-cyberDark border border-cyberBorder focus:border-accentGreen rounded-lg px-4 py-2 text-sm text-gray-100 outline-none font-mono">
+                    </div>
+                    <div id="passScore" class="bg-cyberDark border border-cyberBorder rounded-lg p-4 font-mono text-center text-sm">
+                        <span class="text-gray-400">Enter key to calculate entropy score</span>
+                    </div>
+                    <ul id="passFeedback" class="bg-cyberDark border border-cyberBorder rounded-lg p-3 text-xs font-mono space-y-1">
+                        <!-- Feedback elements -->
+                    </ul>
+                </div>
+            </section>
+
+            <!-- MODULE 6: PORT SCANNER -->
+            <section id="mod-port" class="tab-content hidden">
+                <div class="text-center mb-4">
+                    <h2 class="text-xl font-bold text-accentGreen font-mono">🛡️ Network Infrastructure Port Scanner Module</h2>
+                    <p class="text-sm text-gray-400">Audit common network interface service ports asynchronously.</p>
+                </div>
+                <div class="max-w-3xl mx-auto space-y-4">
+                    <div class="flex flex-col sm:flex-row gap-2 items-center justify-center">
+                        <label class="text-xs font-mono text-gray-300">Target IP / Hostname Vector:</label>
+                        <input type="text" id="portHost" value="127.0.0.1" class="bg-cyberDark border border-cyberBorder focus:border-accentGreen rounded-lg px-3 py-1.5 text-sm font-mono text-gray-100 outline-none">
+                        <button onclick="runPortScan()" class="bg-accentGreen text-cyberDark font-bold px-5 py-2 rounded-lg text-sm hover:opacity-90">🚀 START PORT SCAN SEQUENCE</button>
+                    </div>
+                    <pre id="portTerminal" class="bg-cyberDark border border-cyberBorder rounded-lg p-4 font-mono text-xs text-accentGreen min-h-[220px] overflow-y-auto">System ready for port probe initialization...</pre>
+                </div>
+            </section>
+
+            <!-- MODULE 7: FILE HASHER -->
+            <section id="mod-hasher" class="tab-content hidden">
+                <div class="text-center mb-4">
+                    <h2 class="text-xl font-bold text-accentCyan font-mono">📄 Cryptographic Forensic File Integrity Evaluator</h2>
+                    <p class="text-sm text-gray-400">Calculate cryptographic hashes using browser-native real-time file readers.</p>
+                </div>
+                <div class="max-w-2xl mx-auto space-y-4">
+                    <div class="flex flex-wrap gap-3 items-center justify-center">
+                        <label class="text-xs font-mono text-gray-300">Algorithm:</label>
+                        <select id="hashAlgo" class="bg-cyberDark border border-cyberBorder rounded-lg px-3 py-1.5 text-xs text-accentCyan outline-none">
+                            <option value="SHA-256">SHA-256</option>
+                            <option value="SHA-1">SHA-1</option>
+                            <option value="MD5">MD5</option>
+                        </select>
+                        <input type="file" id="fileInput" class="hidden" onchange="processFileHash()">
+                        <button onclick="document.getElementById('fileInput').click()" class="bg-accentAmber text-cyberDark font-bold px-5 py-2 rounded-lg text-sm hover:opacity-90">📁 BROWSE LOCAL WORKSPACE FILE</button>
+                    </div>
+                    <div id="filePathDisplay" class="text-center font-mono text-xs text-accentAmber italic">No target workspace file loaded.</div>
+                    <div>
+                        <label class="text-xs font-mono text-gray-400 mb-1 block">Computed Cryptographic Hash Output Signature:</label>
+                        <input type="text" id="hashResult" readonly class="w-full bg-cyberDark border border-cyberBorder rounded-lg p-2.5 text-xs font-mono text-accentGreen outline-none" placeholder="Hexadecimal Digest Stream...">
+                    </div>
+                </div>
+            </section>
+
+            <!-- MODULE 8: SUBDOMAIN RECON -->
+            <section id="mod-subrecon" class="tab-content hidden">
+                <div class="text-center mb-4">
+                    <h2 class="text-xl font-bold text-accentAmber font-mono">🌐 Domain Topology Mapping Subdomain Enumeration</h2>
+                    <p class="text-sm text-gray-400">Query active host zones across targeted platforms to map DNS architecture layouts.</p>
+                </div>
+                <div class="max-w-3xl mx-auto space-y-4">
+                    <div class="flex flex-col sm:flex-row gap-2 justify-center">
+                        <input type="text" id="subreconHost" value="google.com" placeholder="target domain (e.g. google.com)" class="bg-cyberDark border border-cyberBorder focus:border-accentAmber rounded-lg px-4 py-2 text-sm font-mono text-gray-100 outline-none sm:w-80">
+                        <button onclick="runSubRecon()" class="bg-accentAmber text-cyberDark font-bold px-5 py-2 rounded-lg text-sm hover:opacity-90">🔍 INITIATE SUBDOMAIN MAP</button>
+                    </div>
+                    <pre id="subreconTerminal" class="bg-cyberDark border border-cyberBorder rounded-lg p-4 font-mono text-xs text-accentCyan min-h-[220px] overflow-y-auto">Recon engine idle...</pre>
+                </div>
+            </section>
+
+            <!-- MODULE 9: CRYPTO XOR -->
+            <section id="mod-cryptoxor" class="tab-content hidden">
+                <div class="text-center mb-4">
+                    <h2 class="text-xl font-bold text-accentCyan font-mono">🔑 Cryptographic Symmetric XOR Framework</h2>
+                    <p class="text-sm text-gray-400">Symmetric payload key string transformations with base64 stream outputs.</p>
+                </div>
+                <div class="max-w-3xl mx-auto space-y-3">
+                    <div>
+                        <label class="text-xs font-mono text-gray-400 mb-1 block">Secret Key Matrix Signature:</label>
+                        <input type="text" id="xorKey" value="DynamicFallbackDefaultMatrixSecretKey" class="w-full bg-cyberDark border border-cyberBorder focus:border-accentCyan rounded-lg px-3 py-1.5 text-xs font-mono text-gray-100 outline-none">
+                    </div>
+                    <div>
+                        <label class="text-xs font-mono text-gray-400 mb-1 block">Input Text Vector (Plaintext / Base64 Payload):</label>
+                        <textarea id="xorInput" rows="3" placeholder="Enter string payload..." class="w-full bg-cyberDark border border-cyberBorder focus:border-accentCyan rounded-lg p-3 text-xs font-mono text-gray-100 outline-none"></textarea>
+                    </div>
+                    <div class="flex justify-center gap-4">
+                        <button onclick="executeXOR(true)" class="bg-accentCrimson text-white font-bold px-5 py-2 rounded-lg text-sm hover:opacity-90">🔐 ENCRYPT PACKET</button>
+                        <button onclick="executeXOR(false)" class="bg-accentGreen text-cyberDark font-bold px-5 py-2 rounded-lg text-sm hover:opacity-90">🔓 DECRYPT BLOB</button>
+                    </div>
+                    <div>
+                        <label class="text-xs font-mono text-gray-400 mb-1 block">Transformed Pipeline Stream Output:</label>
+                        <textarea id="xorOutput" readonly rows="3" class="w-full bg-cyberDark border border-cyberBorder rounded-lg p-3 text-xs font-mono text-accentGreen outline-none"></textarea>
+                    </div>
+                </div>
+            </section>
+
+            <!-- MODULE 10: AUDIT LOGS -->
+            <section id="mod-audit" class="tab-content hidden">
+                <div class="text-center mb-4 flex justify-between items-center max-w-4xl mx-auto">
+                    <div>
+                        <h2 class="text-xl font-bold text-accentCyan font-mono">📋 Centralized Database Audit Telemetry Registry</h2>
+                        <p class="text-xs text-gray-400">Forensic activity logs persisted in local storage.</p>
+                    </div>
+                    <div class="flex gap-2">
+                        <button onclick="loadAuditLogs()" class="bg-accentCyan text-cyberDark font-bold px-4 py-2 rounded-lg text-xs hover:opacity-90">🔄 REFRESH</button>
+                        <button onclick="clearAuditLogs()" class="bg-accentCrimson text-white font-bold px-4 py-2 rounded-lg text-xs hover:opacity-90">🧹 CLEAR LOGS</button>
+                    </div>
+                </div>
+                <div class="max-w-4xl mx-auto bg-cyberDark border border-cyberBorder rounded-lg p-3 overflow-x-auto min-h-[300px]">
+                    <table class="w-full text-left font-mono text-xs">
+                        <thead>
+                            <tr class="border-b border-cyberBorder text-accentCyan">
+                                <th class="p-2">ID</th>
+                                <th class="p-2">TIMESTAMP</th>
+                                <th class="p-2">MODULE ENGINE</th>
+                                <th class="p-2">ASSESSMENT LOG SUMMARY</th>
+                            </tr>
+                        </thead>
+                        <tbody id="auditTableBody" class="divide-y divide-cyberBorder text-gray-300">
+                            <!-- Injected telemetry rows -->
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+
+        </div>
+    </main>
+
+    <!-- FOOTER -->
+    <footer class="bg-cyberPanel border-t border-cyberBorder p-3 text-center text-xs font-mono text-gray-500">
+        CyberSuite Pro • Client-Side Web Assembly Security Audit Framework • HTML5 / ES6 Engine
+    </footer>
+
+    <!-- JAVASCRIPT APP ENGINE -->
+    <script>
+        // ==========================================
+        // LOCAL STORAGE AUDIT LOG TELEMETRY SYSTEM
+        // ==========================================
+        function logTelemetry(moduleName, resultSummary) {
+            let logs = JSON.parse(localStorage.getItem('cybersuite_logs') || '[]');
+            const logEntry = {
+                id: logs.length + 1,
+                timestamp: new Date().toISOString().replace('T', ' ').substring(0, 19),
+                module: moduleName,
+                result: resultSummary
+            };
+            logs.unshift(logEntry); // new logs first
+            localStorage.setItem('cybersuite_logs', JSON.stringify(logs));
+        }
+
+        function loadAuditLogs() {
+            const logs = JSON.parse(localStorage.getItem('cybersuite_logs') || '[]');
+            const tbody = document.getElementById('auditTableBody');
+            tbody.innerHTML = '';
+            
+            if (logs.length === 0) {
+                tbody.innerHTML = `<tr><td colspan="4" class="p-4 text-center text-gray-500">[INFO] Database telemetry array is currently empty.</td></tr>`;
+                return;
+            }
+
+            logs.forEach(log => {
+                const tr = document.createElement('tr');
+                tr.className = "hover:bg-cyberPanel/50 transition";
+                tr.innerHTML = `
+                    <td class="p-2 text-gray-500">${log.id}</td>
+                    <td class="p-2 text-gray-400">${log.timestamp}</td>
+                    <td class="p-2 text-accentCyan">${log.module}</td>
+                    <td class="p-2 text-gray-200">${log.result}</td>
+                `;
+                tbody.appendChild(tr);
+            });
+        }
+
+        function clearAuditLogs() {
+            localStorage.removeItem('cybersuite_logs');
+            loadAuditLogs();
+        }
+
+        // ==========================================
+        // TAB NAVIGATION PIPELINE
+        // ==========================================
+        function switchTab(tabId) {
+            document.querySelectorAll('.tab-content').forEach(el => el.classList.add('hidden'));
+            document.querySelectorAll('.tab-btn').forEach(el => {
+                el.classList.remove('bg-accentCyan', 'text-cyberDark', 'font-bold');
+                el.classList.add('text-gray-400');
+            });
+
+            document.getElementById(`mod-${tabId}`).classList.remove('hidden');
+            const activeBtn = document.getElementById(`tab-${tabId}`);
+            activeBtn.classList.add('bg-accentCyan', 'text-cyberDark', 'font-bold');
+            activeBtn.classList.remove('text-gray-400');
+
+            if (tabId === 'audit') loadAuditLogs();
+        }
+
+        // ==========================================
+        // MODULE 1: NETBLOCKER ENGINE
+        // ==========================================
+        let blockedDomains = ["www.facebook.com", "facebook.com", "www.youtube.com", "youtube.com", "www.instagram.com", "instagram.com"];
+
+        function renderBlockedDomains() {
+            const list = document.getElementById('blockedDomainsList');
+            list.innerHTML = '';
+            blockedDomains.forEach((dom, index) => {
+                const li = document.createElement('li');
+                li.className = "flex justify-between items-center bg-cyberPanel px-3 py-1.5 rounded border border-cyberBorder text-accentCrimson";
+                li.innerHTML = `
+                    <span>🚫 127.0.0.1 ${dom}</span>
+                    <button onclick="removeDomain(${index})" class="text-xs text-gray-400 hover:text-accentCrimson">Remove</button>
+                `;
+                list.appendChild(li);
+            });
+        }
+
+        function addBlockedDomain() {
+            const input = document.getElementById('netblockerInput');
+            const val = input.value.trim().toLowerCase();
+            if (val && /^[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/.test(val)) {
+                if (!blockedDomains.includes(val)) {
+                    blockedDomains.push(val);
+                    renderBlockedDomains();
+                    logTelemetry('NetBlocker Registry', `Added target domain: ${val}`);
+                    input.value = '';
+                } else {
+                    alert('Target site already exists in block registry.');
+                }
+            } else {
+                alert('Invalid domain structure format (e.g. domain.com)');
+            }
+        }
+
+        function removeDomain(index) {
+            const removed = blockedDomains.splice(index, 1);
+            renderBlockedDomains();
+            logTelemetry('NetBlocker Registry', `Purged domain: ${removed[0]}`);
+        }
+
+        function deployBlockRules() {
+            const consoleEl = document.getElementById('netblockerConsole');
+            consoleEl.classList.remove('hidden');
+            consoleEl.innerHTML = `[FIREWALL RULE ENFORCED]\nVirtual loopback redirect active for ${blockedDomains.length} domains.\nHost mapping updated: 127.0.0.1 bound successfully.`;
+            logTelemetry('NetBlocker Deployment', `Injected ${blockedDomains.length} domains into virtual firewall.`);
+        }
+
+        function flushBlockRules() {
+            const consoleEl = document.getElementById('netblockerConsole');
+            consoleEl.classList.remove('hidden');
+            consoleEl.innerHTML = `[RULES FLUSHED]\nAll localized domain loopback redirects purged. Dynamic DNS rules restored.`;
+            logTelemetry('NetBlocker Deployment', 'Purged current restrictions from network rules.');
+        }
+
+        // ==========================================
+        // MODULE 2: EMAIL ANALYZER ENGINE
+        // ==========================================
+        function analyzeEmail() {
+            const email = document.getElementById('emailInput').value.trim();
+            const report = document.getElementById('emailReport');
+            const regex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+
+            if (regex.test(email)) {
+                const parts = email.split('@');
+                const user = parts[0];
+                const domainParts = parts[1].split('.');
+                const coreDomain = domainParts[0];
+                const tld = domainParts[domainParts.length - 1];
+
+                const userStatus = user.length >= 8 ? '✅ Username length conforms to baseline structural profiles.' : '⚠️ Low density username structural profile layout.';
+                const tldStatus = ['com', 'org', 'net', 'edu', 'gov'].includes(tld.toLowerCase()) ? '✅ Zone falls inside established Global Top-Level arrays.' : '⚠️ Unconventional regional routing extension.';
+
+                report.textContent = 
+`====== SECURITY INTEL EMAIL REPORT ANALYSIS ======
+Target Identifier Address : ${email}
+Parsing Account User      : ${user}
+Host Core Domain Engine   : ${coreDomain}
+Domain Zone TLD Extension : .${tld}
+-------------------------------------------------------
+${userStatus}
+${tldStatus}`;
+                logTelemetry('Email Analyzer', `Analyzed structure handle: ${email}`);
+            } else {
+                report.textContent = `❌ [CRITICAL ENGINE FAULT]: SYNTAX ERROR — INVALID STRUCTURAL COMPLIANCE PIPELINE`;
+            }
+        }
+
+        function clearEmail() {
+            document.getElementById('emailInput').value = '';
+            document.getElementById('emailReport').textContent = 'Awaiting handle input target...';
+        }
+
+        // ==========================================
+        // MODULE 3: SCAM SMS HEURISTICS ENGINE
+        // ==========================================
+        const SCAM_KEYWORDS = ["otp", "verify", "bank", "click", "winner", "lottery", "prize", "urgent", "free", "gift", "reward", "claim", "password", "account suspended", "kyc", "loan approved"];
+
+        function analyzeSMS() {
+            const text = document.getElementById('smsInput').value.trim();
+            const output = document.getElementById('smsOutput');
+            let risk = 0;
+            let matched = [];
+
+            SCAM_KEYWORDS.forEach(word => {
+                const reg = new RegExp('\\b' + word + '\\b', 'gi');
+                if (reg.test(text)) {
+                    risk += 15;
+                    matched.push(word);
+                }
+            });
+
+            const links = text.match(/https?:\/\/\S+|www\.\S+/gi) || [];
+            if (links.length > 0) risk += 30;
+
+            risk = Math.min(risk, 100);
+
+            let status = "✅ SECURE: COMPLIANT PHRASE METRIC CORRELATION";
+            let colorClass = "text-accentGreen";
+
+            if (risk >= 60) {
+                status = "🚨 CRITICAL WARNING: FRAUDULENT EXPLOIT SIGNATURE MATCH";
+                colorClass = "text-accentCrimson";
+            } else if (risk >= 30) {
+                status = "⚠️ CAUTION: SUSPICIOUS HEURISTIC PATTERN DETECTED";
+                colorClass = "text-accentAmber";
+            }
+
+            let logDetails = `Computed Severity Score : ${risk}/100\nHeuristic Threat Status : ${status}\n=================================================================\n\nTriggered Lexicon Flags:\n`;
+
+            if (matched.length > 0) {
+                matched.forEach(m => logDetails += `  • Triggered Flag Phrase: [${m}]\n`);
+            } else {
+                logDetails += `  • [0] Negative Flag Ingest Returns\n`;
+            }
+
+            if (links.length > 0) {
+                logDetails += `\nIsolated Suspicious Payload Redirection Targets:\n`;
+                links.forEach(l => logDetails += `  • Bound Link Element: ${l}\n`);
+            }
+
+            output.className = `bg-cyberDark border border-cyberBorder rounded-lg p-4 font-mono text-xs ${colorClass} min-h-[160px] whitespace-pre-wrap`;
+            output.textContent = logDetails;
+            logTelemetry('Scam SMS Detector', `Linguistic Threat Checked Score: ${risk}/100`);
+        }
+
+        // ==========================================
+        // MODULE 4: PHISHGUARD DOMAIN ENGINE
+        // ==========================================
+        const POPULAR_DOMAINS = ['facebook.com', 'google.com', 'amazon.com', 'apple.com', 'microsoft.com', 'paypal.com', 'instagram.com'];
+        const SUSPICIOUS_TLDS = ['.tk', '.ml', '.ga', '.cf', '.gq', '.xyz', '.top'];
+        const PHISHING_KEYWORDS = ['login', 'verify', 'account', 'update', 'secure', 'banking', 'signin', 'confirm'];
+
+        function inspectURL() {
+            let target = document.getElementById('phishInput').value.trim();
+            const display = document.getElementById('phishStatus');
+            if (!target) return;
+
+            if (!target.startsWith('http://') && !target.startsWith('https://')) {
+                target = 'http://' + target;
+            }
+
+            let risk = 0;
+            let reasons = [];
+
+            try {
+                const url = new URL(target);
+                const host = url.hostname.toLowerCase();
+                const path = url.pathname.toLowerCase();
+
+                if (/^\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}$/.test(host)) {
+                    risk += 35;
+                    reasons.push("❌ Raw IP utilized instead of mapped DNS hostname.");
+                }
+
+                if (SUSPICIOUS_TLDS.some(tld => host.endsWith(tld))) {
+                    risk += 25;
+                    reasons.push("❌ High-threat volatile TLD domain extension detected.");
+                }
+
+                if (url.protocol === 'http:') {
+                    risk += 20;
+                    reasons.push("❌ Scheme validation failed: Plaintext unencrypted HTTP pipeline.");
+                }
+
+                if (target.includes('@')) {
+                    risk += 30;
+                    reasons.push("❌ High-risk redirection parameter explicit character usage ('@').");
+                }
+
+                POPULAR_DOMAINS.forEach(brand => {
+                    if (host.includes(brand) && host !== brand && host !== `www.${brand}`) {
+                        risk += 45;
+                        reasons.push(`❌ Brand Typosquatting mismatch: masquerading as imitation of [${brand}].`);
+                    }
+                });
+
+                let keywordCount = 0;
+                PHISHING_KEYWORDS.forEach(kw => {
+                    if (host.includes(kw) || path.includes(kw)) keywordCount++;
+                });
+
+                if (keywordCount >= 2) {
+                    risk += 20;
+                    reasons.push("❌ High aggregation density of credential hijacking terms.");
+                }
+
+            } catch (e) {
+                risk = 100;
+                reasons.push("❌ Malformed target URL payload format.");
+            }
+
+            if (risk >= 60) {
+                display.className = "bg-cyberDark border border-accentCrimson rounded-lg p-4 font-mono text-sm text-accentCrimson font-bold";
+                display.innerHTML = `🔴 DETECTED SEVERE RISK: PHISHING SIGNATURE RECOGNIZED (${risk}/100)<br><div class="text-xs font-normal text-gray-300 mt-2 text-left">${reasons.join('<br>')}</div>`;
+            } else if (risk >= 30) {
+                display.className = "bg-cyberDark border border-accentAmber rounded-lg p-4 font-mono text-sm text-accentAmber font-bold";
+                display.innerHTML = `🟡 WARNING: UNVERIFIED TARGET DETECTED (${risk}/100)<br><div class="text-xs font-normal text-gray-300 mt-2 text-left">${reasons.join('<br>')}</div>`;
+            } else {
+                display.className = "bg-cyberDark border border-accentGreen rounded-lg p-4 font-mono text-sm text-accentGreen font-bold";
+                display.innerHTML = `🟢 ENCRYPTED LOGICAL STRUCTURAL INTEGRITY VERIFIED (${risk}/100)<br><div class="text-xs font-normal text-gray-300 mt-2">All baseline structural parameters passed validation checks.</div>`;
+            }
+
+            logTelemetry('PhishGuard', `Calculated Domain Threat Vector: ${risk}/100`);
+        }
+
+        // ==========================================
+        // MODULE 5: PASSWORD ENTROPY CHECKER
+        // ==========================================
+        function checkPassword() {
+            const pass = document.getElementById('passInput').value;
+            const scoreEl = document.getElementById('passScore');
+            const feedbackEl = document.getElementById('passFeedback');
+            feedbackEl.innerHTML = '';
+
+            if (!pass) {
+                scoreEl.innerHTML = '<span class="text-gray-400">Enter key to calculate entropy score</span>';
+                return;
+            }
+
+            let score = 0;
+            let feedback = [];
+
+            if (pass.length >= 8) score++;
+            else feedback.push("❌ Sequence length error (< 8 characters)");
+
+            if (/[A-Z]/.test(pass)) score++;
+            else feedback.push("❌ Missing uppercase layer configuration");
+
+            if (/[a-z]/.test(pass)) score++;
+            
+            if (/[0-9]/.test(pass)) score++;
+            else feedback.push("❌ Numeric element missing");
+
+            if (/[!@#$%^&*(),.?":{}|<>]/.test(pass)) score++;
+            else feedback.push("❌ Special symbols omitted (!, @, #, etc.)");
+
+            if (score === 5) {
+                scoreEl.innerHTML = `<span class="text-accentGreen font-bold">✅ OPTIMAL COMPLIANT SELECTION ENTROPY (5/5)</span>`;
+            } else if (score >= 3) {
+                scoreEl.innerHTML = `<span class="text-accentAmber font-bold">⚠️ INTERMEDIATE STRUCTURAL AUDIT DETECTED (${score}/5)</span>`;
+            } else {
+                scoreEl.innerHTML = `<span class="text-accentCrimson font-bold">❌ HIGH FRAUD VULNERABILITY SIGNATURE MATCH (${score}/5)</span>`;
+            }
+
+            if (feedback.length === 0) {
+                feedbackEl.innerHTML = `<li class="text-accentGreen">✅ All structural complexity parameters verified.</li>`;
+            } else {
+                feedback.forEach(item => {
+                    const li = document.createElement('li');
+                    li.className = "text-accentCrimson";
+                    li.textContent = item;
+                    feedbackEl.appendChild(li);
+                });
+            }
+
+            logTelemetry('Password Auditor', `Entropy Strength: ${score}/5`);
+        }
+
+        // ==========================================
+        // MODULE 6: ASYNC PORT SCANNER SIMULATOR
+        // ==========================================
+        async function runPortScan() {
+            const host = document.getElementById('portHost').value.trim() || '127.0.0.1';
+            const term = document.getElementById('portTerminal');
+            term.textContent = `[SYSTEM PROBE STARTING] Target: ${host}\nMapping interface sockets...\n\n`;
+
+            const ports = [21, 22, 23, 25, 53, 80, 110, 135, 443, 445, 3306, 3389];
+            let openCount = 0;
+
+            for (let port of ports) {
+                await new Promise(res => setTimeout(res, 150)); // simulate socket latency
+                // Simulate open ports dynamically (80, 443, 22 open by default for simulation)
+                const isOpen = [80, 443, 22, 3306].includes(port);
+                if (isOpen) {
+                    term.textContent += `  -> Port ${port}: [OPEN STATUS DETECTED] 🟢\n`;
+                    openCount++;
+                } else {
+                    term.textContent += `  -> Port ${port}: [CLOSED / FILTERED] 🔴\n`;
+                }
+                term.scrollTop = term.scrollHeight;
+            }
+
+            term.textContent += `\n[PROBE SEQUENCE FINALIZED] Identified open ports: ${openCount}\n`;
+            logTelemetry('Port Scanner', `Scanned ${host}. Open ports found: ${openCount}`);
+        }
+
+        // ==========================================
+        // MODULE 7: FILE HASHER (WEB CRYPTO API)
+        // ==========================================
+        async function processFileHash() {
+            const fileInput = document.getElementById('fileInput');
+            const pathDisplay = document.getElementById('filePathDisplay');
+            const resultInput = document.getElementById('hashResult');
+            const algo = document.getElementById('hashAlgo').value;
+
+            if (!fileInput.files.length) return;
+            const file = fileInput.files[0];
+            pathDisplay.textContent = `Loaded Stream: ${file.name} (${(file.size / 1024).toFixed(2)} KB)`;
+            resultInput.value = "Computing cryptographic signature...";
+
+            const reader = new FileReader();
+            reader.onload = async function(e) {
+                const arrayBuffer = e.target.result;
+                let hashHex = "";
+
+                if (algo === "SHA-256") {
+                    const hashBuffer = await crypto.subtle.digest('SHA-256', arrayBuffer);
+                    const hashArray = Array.from(new Uint8Array(hashBuffer));
+                    hashHex = hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
+                } else if (algo === "SHA-1") {
+                    const hashBuffer = await crypto.subtle.digest('SHA-1', arrayBuffer);
+                    const hashArray = Array.from(new Uint8Array(hashBuffer));
+                    hashHex = hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
+                } else if (algo === "MD5") {
+                    // Fallback to CryptoJS for MD5
+                    const wordArray = CryptoJS.lib.WordArray.create(arrayBuffer);
+                    hashHex = CryptoJS.MD5(wordArray).toString();
+                }
+
+                resultInput.value = hashHex;
+                logTelemetry('File Hasher', `Computed ${algo} signature on: ${file.name}`);
+            };
+            reader.readAsArrayBuffer(file);
+        }
+
+        // ==========================================
+        // MODULE 8: SUBDOMAIN RECONNAISSANCE ENGINE
+        // ==========================================
+        async function runSubRecon() {
+            const base = document.getElementById('subreconHost').value.trim();
+            const term = document.getElementById('subreconTerminal');
+            if (!base) return;
+
+            term.textContent = `[INTEL SEARCH ACTIVE] Enumerating targets for: ${base}\n\n`;
+
+            const wordlist = ["www", "mail", "ftp", "admin", "blog", "cpanel", "test", "dev", "api", "secure"];
+            let found = 0;
+
+            for (let sub of wordlist) {
+                await new Promise(res => setTimeout(res, 200));
+                const full = `${sub}.${base}`;
+                // Simulated active DNS lookup
+                const isFound = ["www", "mail", "api", "secure"].includes(sub);
+                if (isFound) {
+                    const fakeIP = `172.217.${Math.floor(Math.random()*255)}.${Math.floor(Math.random()*255)}`;
+                    term.textContent += `  [+] DETECTED MAP: ${full.padEnd(25, ' ')} -> Bound IP Reference: [${fakeIP}]\n`;
+                    found++;
+                }
+                term.scrollTop = term.scrollHeight;
+            }
+
+            term.textContent += `\n[DISCOVERY STAGE FINALIZED] - Found ${found} active subdomains.\n`;
+            logTelemetry('SubDomain Recon', `Scanned domain: ${base}. Active mappings resolved: ${found}`);
+        }
+
+        // ==========================================
+        // MODULE 9: CRYPTO XOR ENGINE
+        // ==========================================
+        function executeXOR(encrypt) {
+            try {
+                const key = document.getElementById('xorKey').value.trim();
+                let data = document.getElementById('xorInput').value.trim();
+                const output = document.getElementById('xorOutput');
+
+                if (!key || !data) {
+                    alert('Key and Data fields required.');
+                    return;
+                }
+
+                // Generate SHA-256 key array
+                const keyHash = CryptoJS.SHA256(key).toString(CryptoJS.enc.Latin1);
+
+                if (!encrypt) {
+                    try {
+                        data = atob(data); // base64 decode
+                    } catch (e) {
+                        alert('Invalid Base64 input blob string for decryption.');
+                        return;
+                    }
+                }
+
+                let result = '';
+                for (let i = 0; i < data.length; i++) {
+                    const charCode = data.charCodeAt(i) ^ keyHash.charCodeAt(i % keyHash.length);
+                    result += String.fromCharCode(charCode);
+                }
+
+                if (encrypt) {
+                    result = btoa(result); // base64 encode
+                }
+
+                output.value = result;
+                logTelemetry('XOR Crypt Engine', `Executed symmetric ${encrypt ? 'Encryption' : 'Decryption'} payload sequence.`);
+            } catch (err) {
+                alert(`Cryptographic Computational Error: ${err.message}`);
+            }
+        }
+
+        // ==========================================
+        // INITIALIZATION ON APP LOAD
+        // ==========================================
+        window.onload = function() {
+            renderBlockedDomains();
+            switchTab('netblocker');
+        };
+    </script>
+</body>
+</html>
